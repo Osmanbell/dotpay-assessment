@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotpay-assessment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dotpay-assessment
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: dotpay-assessment
+    spec:
+      containers:
+        - name: dotpay-assessment
+          image: oladapoyuken/dotpay-assessment:0.0.1-SNAPSHOT
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9090
+          env:
+            - name: COMMISSION_CRON_EXPRESSION
+              value: "0 42 15 * * ?"
+            - name: SUMMARY_CRON_EXPRESSION
+              value: "0 42 15 * * ?"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mariadb://mariadb:3306/dotpayDB"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "root"
+
+      restartPolicy: Always
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dotpay-assessment
+spec:
+  selector:
+    app: dotpay-assessment
+  ports:
+  - protocol: TCP
+    port: 9090
+    targetPort: 9090
+  type: LoadBalancer

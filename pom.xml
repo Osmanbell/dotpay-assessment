@@ -67,7 +67,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <name>oladapoyuken/test-${project.artifactId}:${project.version}</name>
+                        <name>oladapoyuken/${project.artifactId}:${project.version}</name>
                     </image>
                     <pullPolicy>ALWAYS</pullPolicy>
                     <excludes>
