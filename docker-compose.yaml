@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+
+  dotpay:
+    image: dotpay-assessment:1.0.0
+    ports:
+      - "9090:9090"
+    depends_on:
+      - mariadb
+    links:
+      - mariadb
+    environment:
+      COMMISSION_CRON_EXPRESSION: 0 42 15 * * ?
+      SUMMARY_CRON_EXPRESSION: 0 42 15 * * ?
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/dotpayDB
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+  mariadb:
+    image: mariadb
+    volumes:
+      - mariadb_data:/var/lib/maria
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dotpayDB
+      MYSQL_PASSWORD: root
+
+volumes:
+  mariadb_data:
+    driver: local
+  data: {}
+
+networks:
+  default:
+    name: my_network
